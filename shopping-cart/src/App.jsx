@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Header from "./Header";
+import ProductCard from "./ProductCard";
+import Cart from "./Cart"; // Importera Cart-komponenten
+import "./App.css";
+
+const products = [
+  { id: 1, title: "A Sign of Four", author: "Sir Arthur Conan Doyle" },
+  { id: 2, title: "A Study in Scarlet", author: "Sir Arthur Conan Doyle" },
+  { id: 3, title: "Baskervilles Hound", author: "Sir Arthur Conan Doyle" },
+  { id: 4, title: "The Adventures of Sherlock Holmes", author: "Sir Arthur Conan Doyle" },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cartItems, setCartItems] = useState([]);
+
+  const handleAddToCart = (product) => {
+    // Förhindra att lägga till samma produkt flera gånger
+    if (!cartItems.some(item => item.id === product.id)) {
+      setCartItems([...cartItems, product]);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <Header cartCount={cartItems.length} />
+      <Cart cartItems={cartItems} /> {/* Visar varukorgens innehåll */}
+      
+      <div className="product-grid">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={() => handleAddToCart(product)}
+            isInCart={cartItems.some(item => item.id === product.id)} // Kontrollera om produkten redan är i varukorgen
+          />
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
